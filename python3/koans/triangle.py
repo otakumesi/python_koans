@@ -16,9 +16,44 @@
 # and
 #   about_triangle_project_2.py
 #
+
+
 def triangle(a, b, c):
-    # DELETE 'PASS' AND WRITE THIS CODE
-    pass
+    if any([n < 1 for n in [a, b, c]]):
+        raise TriangleError
+
+    if is_triangle(a, b, c):
+        return 'equilateral'
+    elif is_isosceles(a, b, c):
+        return 'isosceles'
+    else:
+        return 'scalene'
+
+
+def is_triangle(a, b, c):
+    ab = a == b
+    ac = a == c
+    return ab and ac
+
+
+def is_isosceles(a, b, c):
+    if a == b:
+        if a > c:
+            return True
+        else:
+            raise TriangleError
+    if b == c:
+        if b > a:
+            return True
+        else:
+            raise TriangleError
+    if a == c:
+        if c > b:
+            return True
+        else:
+            raise TriangleError
+    return False
+
 
 # Error class used in part 2.  No need to change this code.
 class TriangleError(Exception):
