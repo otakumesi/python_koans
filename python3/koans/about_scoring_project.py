@@ -32,9 +32,29 @@ from runner.koan import *
 #
 # Your goal is to write the score method.
 
+from collections import Counter
+
 def score(dice):
-    # You need to write this method
-    pass
+    num = 0
+
+    dice_dict = Counter(dice)
+
+    for k, v in dice_dict.items():
+        if v >= 3:
+          if k == 1:
+              num += 1000
+          else:
+              num += k * 100
+          dice_dict[k] -= 3
+
+    for x in range(1, dice_dict[1] + 1):
+        num += 100
+
+    for x in range(1, dice_dict[5] + 1):
+        num += 50
+
+    return num
+
 
 class AboutScoringProject(Koan):
     def test_score_of_an_empty_list_is_zero(self):
