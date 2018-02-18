@@ -17,15 +17,50 @@
 # can do it!
 
 from runner.koan import *
+import inspect
 
 class Proxy:
     def __init__(self, target_object):
         # WRITE CODE HERE
-
         #initialize '_obj' attribute last. Trust me on this!
         self._obj = target_object
+        self._messages = []
 
     # WRITE CODE HERE
+    def __getattr__(self, attr_name):
+        if attr_name[0] != '_' and attr_name.count('number_of_times_called_') < 1 and attr_name.count('was_called_') < 1:
+            self.__setattr__('was_called_' + attr_name, True)
+            self._messages.append(attr_name)
+            self.set_number_of_times_called(attr_name)
+        return object.__getattribute__(self._obj, attr_name)
+
+    def __setattr__(self, attr_name, value):
+        if attr_name[0] != '_' and attr_name.count('number_of_times_called_') < 1 and attr_name.count('was_called_') < 1:
+            self.set_number_of_times_called(attr_name)
+            self._messages.append(attr_name)
+        return object.__setattr__(self, attr_name, value)
+
+    def was_called(self, attr_name):
+        try:
+            return getattr(self, 'was_called_' + attr_name)
+        except AttributeError:
+            return False
+
+    def number_of_times_called(self, attr_name):
+        try:
+            return getattr(self, 'number_of_times_called_' + attr_name)
+        except AttributeError:
+            return 0
+
+    def set_number_of_times_called(self, attr_name):
+        try:
+            num = getattr(self, 'number_of_times_called_' + attr_name)
+            setattr(self, 'number_of_times_called_' + attr_name, num + 1)
+        except AttributeError:
+            setattr(self, 'number_of_times_called_' + attr_name, 1)
+
+    def messages(self):
+        return self._messages
 
 # The proxy object should pass the following Koan:
 #
